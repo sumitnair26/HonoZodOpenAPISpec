@@ -1,3 +1,4 @@
+import { swaggerUI } from '../../../../../node_modules/@hono/swagger-ui/dist/index.cjs';
 import { createRoute, OpenAPIHono } from '../node_modules/@hono/zod-openapi/dist/index';
 import { ParamsSchema } from './input';
 import { UserSchema } from './ouput';
@@ -22,7 +23,7 @@ const getUserRoute = createRoute({
 })
 
 const postUserRoute = createRoute({
-  method: 'get',
+  method: 'post',
   path:'/user/{id}',
   request:{
     params: ParamsSchema
@@ -40,7 +41,7 @@ const postUserRoute = createRoute({
 })
 
 
-app.openapi(getUserRoute, (c:any)=> {
+app.openapi(getUserRoute, (cy)=> {
   const { id } = c.req.valid("param");
   return c.json({
     id,
@@ -49,7 +50,7 @@ app.openapi(getUserRoute, (c:any)=> {
   })
 })
 
-app.openapi(postUserRoute, (c:any)=> {
+app.openapi(postUserRoute, (c)=> {
   const { id } = c.req.valid("param");
   return c.json({
     id,
@@ -66,5 +67,7 @@ app.doc('/doc', {
     title: 'My API',
   },
 })
+
+app.get('/ui', swaggerUI({ url: '/doc' }))
 
 export default app;
